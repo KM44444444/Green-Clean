@@ -1,6 +1,6 @@
 # Green & Clean 🌱♻️
 
-A smart waste management web application built for **Smart India Hackathon 2025**.
+A smart waste management web application built for **Smart India Hackathon 2026**.
 
 ## About the Project
 
