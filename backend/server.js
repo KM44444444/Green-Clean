@@ -2,13 +2,19 @@ require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
-const vision = require('@google-cloud/vision');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-// Creates a Google Cloud Vision client
-const client = new vision.ImageAnnotatorClient();
+let client = null;
+try {
+  if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    const vision = require('@google-cloud/vision');
+    client = new vision.ImageAnnotatorClient();
+  }
+} catch (e) {
+  console.warn('Google Cloud Vision not configured. Image validation disabled.');
+}
 
 app.use(cors());
 app.use(express.json());
@@ -23,6 +29,7 @@ function getDateString(date) {
 
 // Check if image contains garbage labels
 async function checkImageForGarbage(filePath) {
+  if (!client) return true;
   const [result] = await client.labelDetection(filePath);
   const labels = result.labelAnnotations;
 
@@ -69,7 +76,7 @@ app.post('/upload-photo', upload.single('photo'), async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

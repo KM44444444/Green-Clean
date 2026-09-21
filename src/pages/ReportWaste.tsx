@@ -119,7 +119,7 @@ const ReportWaste = () => {
 
   const calculatePoints = (item: string, value: number | "") => (item === "largeAppliance" ? (value ? value * 0.2 : 0) : oldItemPoints[item] || 0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!photo || !location) {
       toast({ title: "Missing information", description: "Please provide a photo and location.", variant: "destructive" });
@@ -130,11 +130,27 @@ const ReportWaste = () => {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const formData = new FormData();
+      formData.append("photo", photo);
+      const res = await fetch("/upload-photo", {
+        method: "POST",
+        headers: { "x-user-id": "user1" },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast({ title: "Error", description: data.error || "Upload failed", variant: "destructive" });
+        setLoading(false);
+        return;
+      }
       setLoading(false);
       setSubmitted(true);
       toast({ title: "Report submitted", description: `You earned ${wasteCategory === "oldHousehold" ? calculatedPoints : 5} points.` });
-    }, 2000);
+    } catch {
+      setLoading(false);
+      toast({ title: "Error", description: "Could not reach backend server.", variant: "destructive" });
+    }
   };
 
   if (submitted) {
