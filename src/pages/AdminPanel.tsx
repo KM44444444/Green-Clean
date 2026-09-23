@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -289,6 +290,13 @@ export default function AdminPanel() {
           </Card>
         </TabsContent>
       </Tabs>
+=======
+export default function AdminPanel() {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">Admin Panel</h1>
+      <p>This page is visible only to Admin role.</p>
+>>>>>>> origin/main
     </div>
   );
 }

@@ -14,6 +14,10 @@ import {
   Shield,
   Droplets,
 } from "lucide-react";
+<<<<<<< HEAD
+=======
+import Navbar from "@/components/Navbar";
+>>>>>>> origin/main
 import Footer from "@/components/Footer";
 
 const About = () => {
@@ -102,6 +106,10 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+<<<<<<< HEAD
+=======
+      <Navbar />
+>>>>>>> origin/main
 
       <main className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

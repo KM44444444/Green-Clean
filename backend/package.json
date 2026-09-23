@@ -1,5 +1,6 @@
 {
   "name": "backend",
+<<<<<<< HEAD
   "version": "2.0.0",
   "description": "Green & Clean backend API",
   "main": "server.js",
@@ -8,18 +9,31 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed": "node seed.js"
+=======
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+>>>>>>> origin/main
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/vision": "^5.3.3",
+<<<<<<< HEAD
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.3.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+=======
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+>>>>>>> origin/main
     "multer": "^2.0.2"
   }
 }

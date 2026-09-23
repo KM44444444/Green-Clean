@@ -1,5 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+<<<<<<< HEAD
+=======
+import Navbar from "@/components/Navbar";
+>>>>>>> origin/main
 import Footer from "@/components/Footer";
 import StatsCounter from "@/components/StatsCounter";
 import DonateItems from "@/pages/DonateItems";
@@ -80,6 +84,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+<<<<<<< HEAD
+=======
+      <Navbar />
+>>>>>>> origin/main
       
       {/* Hero Section */}
       <section 

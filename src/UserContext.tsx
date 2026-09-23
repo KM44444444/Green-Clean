@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import {
   StoredUser,
@@ -25,11 +26,21 @@ interface UserContextType {
     | { ok: false; error: string };
   logout: () => void;
   refresh: () => void;
+=======
+import React, { createContext, useContext, useState } from "react";
+
+type Role = "admin" | "worker" | "user";
+
+interface UserContextType {
+  role: Role;
+  setRole: (role: Role) => void;
+>>>>>>> origin/main
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+<<<<<<< HEAD
   const [currentUser, setCurrentUser] = useState<StoredUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -94,6 +105,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <UserContext.Provider
       value={{ currentUser, role: currentUser?.role ?? null, token, loading, login, signup, logout, refresh }}
     >
+=======
+  const [role, setRole] = useState<Role>("user");  // Default role as user
+
+  return (
+    <UserContext.Provider value={{ role, setRole }}>
+>>>>>>> origin/main
       {children}
     </UserContext.Provider>
   );

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +31,19 @@ const Navbar = () => {
   }, [currentUser, location.pathname]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+=======
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Leaf } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();  // Add this line
+
+>>>>>>> origin/main
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -41,6 +55,7 @@ const Navbar = () => {
 
   const isActive = (href: string) => location.pathname === href;
 
+<<<<<<< HEAD
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -105,6 +120,8 @@ const Navbar = () => {
       </Button>
     );
 
+=======
+>>>>>>> origin/main
   return (
     <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,12 +148,27 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+<<<<<<< HEAD
             <AuthArea />
+=======
+                <Button variant="eco" size="sm" onClick={() => navigate("/auth")}>
+                  Get Started
+                </Button>
+
+>>>>>>> origin/main
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
+<<<<<<< HEAD
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
+=======
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+>>>>>>> origin/main
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
@@ -161,6 +193,7 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="px-3 py-2">
+<<<<<<< HEAD
                 {currentUser ? (
                   <div className="flex flex-col gap-2">
                     <Button variant="outline" size="sm" onClick={() => { navigate(roleHome); setIsOpen(false); }}>
@@ -175,6 +208,12 @@ const Navbar = () => {
                     Get Started
                   </Button>
                 )}
+=======
+                <Button variant="eco" size="sm" className="w-full" onClick={() => navigate("/auth")}>
+                    Get Started
+                    </Button>
+
+>>>>>>> origin/main
               </div>
             </div>
           </div>
@@ -184,4 +223,8 @@ const Navbar = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Navbar;
+=======
+export default Navbar;
+>>>>>>> origin/main

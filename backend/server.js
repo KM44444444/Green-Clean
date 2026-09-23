@@ -19,6 +19,7 @@ try {
 app.use(cors());
 app.use(express.json());
 
+<<<<<<< HEAD
 // API Routes
 const authRoutes = require('./routes/auth');
 const reportRoutes = require('./routes/reports');
@@ -32,6 +33,8 @@ app.use('/api/donations', donationRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/worker', workerRoutes);
 
+=======
+>>>>>>> origin/main
 // In-memory upload count { userId: { dateString: count } }
 const uploadCounts = {};
 

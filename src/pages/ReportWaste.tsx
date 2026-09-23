@@ -5,12 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+<<<<<<< HEAD
 import Footer from "@/components/Footer";
 import { Camera, MapPin, Upload, CheckCircle, Loader2, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useUser } from "@/UserContext";
 import { API_BASE } from "@/UserContext";
 import { findNearbyDuplicate, osmLink, WasteReport } from "@/lib/store";
+=======
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Camera, MapPin, Upload, CheckCircle, Loader2 } from "lucide-react";
+>>>>>>> origin/main
 
 const oldItemPoints: Record<string, number> = {
   newspaperBundle: 30,
@@ -21,14 +27,23 @@ const oldItemPoints: Record<string, number> = {
 };
 
 const ReportWaste = () => {
+<<<<<<< HEAD
   const { currentUser } = useUser();
+=======
+>>>>>>> origin/main
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>("");
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
   const [submittedReport, setSubmittedReport] = useState<WasteReport | null>(null);
   const [description, setDescription] = useState("");
   const [wasteCategory, setWasteCategory] = useState<"streetWaste" | "oldHousehold">("streetWaste");
+=======
+  const [submitted, setSubmitted] = useState(false);
+  const [description, setDescription] = useState("");
+  const [wasteCategory, setWasteCategory] = useState("streetWaste");
+>>>>>>> origin/main
   const [oldItemType, setOldItemType] = useState("");
   const [oldItemWeight, setOldItemWeight] = useState<number | "">("");
   const [calculatedPoints, setCalculatedPoints] = useState(0);
@@ -121,6 +136,7 @@ const ReportWaste = () => {
     }
   };
 
+<<<<<<< HEAD
   const calculatePoints = (item: string, value: number | "") =>
     item === "largeAppliance" ? (value ? value * 0.2 : 0) : oldItemPoints[item] || 0;
 
@@ -130,6 +146,12 @@ const ReportWaste = () => {
       toast({ title: "Please log in", description: "You need an account to report waste.", variant: "destructive" });
       return;
     }
+=======
+  const calculatePoints = (item: string, value: number | "") => (item === "largeAppliance" ? (value ? value * 0.2 : 0) : oldItemPoints[item] || 0);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+>>>>>>> origin/main
     if (!photo || !location) {
       toast({ title: "Missing information", description: "Please provide a photo and location.", variant: "destructive" });
       return;
@@ -138,6 +160,7 @@ const ReportWaste = () => {
       toast({ title: "Select item type", description: "Please select a type of item.", variant: "destructive" });
       return;
     }
+<<<<<<< HEAD
 
     // Duplicate-spot detection: same-ish location reported recently.
     const duplicate = findNearbyDuplicate(location.lat, location.lng);
@@ -232,6 +255,46 @@ const ReportWaste = () => {
                     <Button variant="outline" className="w-full">View Wallet</Button>
                   </Link>
                 </div>
+=======
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("photo", photo);
+      const res = await fetch("/upload-photo", {
+        method: "POST",
+        headers: { "x-user-id": "user1" },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast({ title: "Error", description: data.error || "Upload failed", variant: "destructive" });
+        setLoading(false);
+        return;
+      }
+      setLoading(false);
+      setSubmitted(true);
+      toast({ title: "Report submitted", description: `You earned ${wasteCategory === "oldHousehold" ? calculatedPoints : 5} points.` });
+    } catch {
+      setLoading(false);
+      toast({ title: "Error", description: "Could not reach backend server.", variant: "destructive" });
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-green-50">
+        <Navbar />
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-md mx-auto text-center">
+            <Card>
+              <CardContent>
+                <CheckCircle className="h-16 w-16 mx-auto" />
+                <h2 className="text-3xl font-semibold mt-4">Report Submitted!</h2>
+                <p>Thank you for making the community cleaner!</p>
+                <Button onClick={() => setSubmitted(false)} variant="eco" className="mt-6 w-full">
+                  Report More
+                </Button>
+>>>>>>> origin/main
               </CardContent>
             </Card>
           </div>
@@ -243,6 +306,10 @@ const ReportWaste = () => {
 
   return (
     <div className="min-h-screen bg-green-50">
+<<<<<<< HEAD
+=======
+      <Navbar />
+>>>>>>> origin/main
       <div className="container mx-auto px-4 py-16 min-h-screen flex justify-center items-start">
         <Card className="max-w-xl w-full shadow-lg">
           <CardHeader>
@@ -257,7 +324,11 @@ const ReportWaste = () => {
                 <select
                   id="category"
                   value={wasteCategory}
+<<<<<<< HEAD
                   onChange={(e) => setWasteCategory(e.target.value as "streetWaste" | "oldHousehold")}
+=======
+                  onChange={(e) => setWasteCategory(e.target.value)}
+>>>>>>> origin/main
                   className="w-full p-2 border rounded"
                 >
                   <option value="streetWaste">Street Waste</option>
@@ -427,9 +498,12 @@ const ReportWaste = () => {
                       <div>
                         Lat: {location.lat.toFixed(6)}, Lon: {location.lng.toFixed(6)}
                       </div>
+<<<<<<< HEAD
                       <a href={osmLink(location.lat, location.lng)} target="_blank" rel="noreferrer" className="text-sm underline">
                         Preview on map
                       </a>
+=======
+>>>>>>> origin/main
                     </div>
                   ) : (
                     <Button type="button" onClick={getLocation} className="w-full">
