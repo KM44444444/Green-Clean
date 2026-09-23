@@ -7,9 +7,17 @@ import { Label } from "@/components/ui/label";
 import { useUser } from "@/UserContext";
 import { useToast } from "@/hooks/use-toast";
 
+// India has 28 states and 8 union territories. City names are entered as
+// text because there are thousands of towns and cities, and the list changes.
 const states = [
-  { name: "Uttar Pradesh", cities: ["Lucknow", "Kanpur", "Varanasi", "Agra", "Meerut"] },
-  { name: "Delhi", cities: ["New Delhi", "Dwarka", "Rohini", "Karol Bagh"] },
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan",
+  "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+  "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands",
+  "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi",
+  "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
 ];
 
 export default function AuthPage() {
@@ -17,13 +25,11 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedState, setSelectedState] = useState(states[0].name);
-  const [selectedCity, setSelectedCity] = useState(states[0].cities[0]);
+  const [selectedState, setSelectedState] = useState("Andhra Pradesh");
+  const [selectedCity, setSelectedCity] = useState("");
   const navigate = useNavigate();
   const { login, signup } = useUser();
   const { toast } = useToast();
-
-  const cities = states.find((state) => state.name === selectedState)?.cities ?? [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,19 +123,15 @@ export default function AuthPage() {
               <>
                 <div>
                   <Label htmlFor="state">State</Label>
-                  <select id="state" value={selectedState} onChange={(e) => { const next = e.target.value; setSelectedState(next); const nextState = states.find((s) => s.name === next); if (nextState) setSelectedCity(nextState.cities[0]); }} className="w-full p-2 mt-1 border rounded">
+                  <select id="state" value={selectedState} onChange={(e) => setSelectedState(e.target.value)} className="w-full p-2 mt-1 border rounded">
                     {states.map((state) => (
-                      <option key={state.name} value={state.name}>{state.name}</option>
+                      <option key={state} value={state}>{state}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <Label htmlFor="city">City</Label>
-                  <select id="city" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} className="w-full p-2 mt-1 border rounded">
-                    {cities.map((city) => (
-                      <option key={city} value={city}>{city}</option>
-                    ))}
-                  </select>
+                  <Input id="city" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} placeholder="Enter your city or town" required />
                 </div>
               </>
             )}
