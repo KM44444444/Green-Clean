@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import {
   StoredUser,
@@ -8,7 +7,6 @@ import {
   login as storeLogin,
   logout as storeLogout,
   signup as storeSignup,
-  getUsers,
 } from "@/lib/store";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5001";
@@ -20,27 +18,17 @@ interface UserContextType {
   role: Role | null;
   loading: boolean;
   token: string | null;
-  login: (email: string, password: string) => { ok: true; token: string } | { ok: false; error: string };
+  login: (email: string, password: string) => { ok: true; token: string; user: StoredUser } | { ok: false; error: string };
   signup: (input: { name: string; email: string; password: string; role: Role; state: string; city: string }) =>
-    | { ok: true; token: string }
+    | { ok: true; token: string; user: StoredUser }
     | { ok: false; error: string };
   logout: () => void;
   refresh: () => void;
-=======
-import React, { createContext, useContext, useState } from "react";
-
-type Role = "admin" | "worker" | "user";
-
-interface UserContextType {
-  role: Role;
-  setRole: (role: Role) => void;
->>>>>>> origin/main
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-<<<<<<< HEAD
   const [currentUser, setCurrentUser] = useState<StoredUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +69,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCurrentUser(result.user);
     setToken(result.token);
     localStorage.setItem("gc_token", result.token);
-    return { ok: true, token: result.token };
+    return { ok: true, token: result.token, user: result.user };
   };
 
   const signup: UserContextType["signup"] = async (input) => {
@@ -93,24 +81,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCurrentUser(result.user);
     setToken(result.token);
     localStorage.setItem("gc_token", result.token);
-    return { ok: true, token: result.token };
+    return { ok: true, token: result.token, user: result.user };
   };
 
   const logout = () => {
     storeLogout();
     setCurrentUser(null);
+    setToken(null);
+    localStorage.removeItem("gc_token");
   };
 
   return (
     <UserContext.Provider
       value={{ currentUser, role: currentUser?.role ?? null, token, loading, login, signup, logout, refresh }}
     >
-=======
-  const [role, setRole] = useState<Role>("user");  // Default role as user
-
-  return (
-    <UserContext.Provider value={{ role, setRole }}>
->>>>>>> origin/main
       {children}
     </UserContext.Provider>
   );
