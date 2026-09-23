@@ -17,9 +17,6 @@ const Footer = () => {
               Smart Web-Based Waste Reporting & Reward System for a cleaner, greener future. 
               Join us in making waste management smarter and more efficient.
             </p>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-primary-foreground/70">Community-driven clean living</span>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -59,7 +56,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
           <p className="text-primary-foreground/60">
-            © 2025 Green & Clean. Built for Smart India Hackathon 2025. All rights reserved.
+            © 2025 Green & Clean. All rights reserved.
           </p>
         </div>
       </div>
