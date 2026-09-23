@@ -1,7 +1,6 @@
-import { Leaf, Mail, Users, Award } from "lucide-react";
+import { Leaf, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import sihLogo from "@/assets/sih.png";
 
 const Footer = () => {
   return (
@@ -19,14 +18,7 @@ const Footer = () => {
               Join us in making waste management smarter and more efficient.
             </p>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Users className="h-4 w-4" />
-                <span className="text-sm">Team: Green & Clean</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <img src={sihLogo} alt="SIH Logo" className="h-5 w-auto" />
-                <span className="text-sm">SIH 2025</span>
-              </div>
+              <span className="text-sm text-primary-foreground/70">Community-driven clean living</span>
             </div>
           </div>
 

@@ -25,17 +25,54 @@ function PrivateRoute({ children, allowedRole }: { children: JSX.Element; allowe
   return children;
 }
 
+function UserRoute({ children }: { children: JSX.Element }) {
+  const { currentUser, loading } = useUser();
+  if (loading) return null;
+  if (!currentUser) return <Navigate to="/auth" replace />;
+  if (currentUser.role !== "user") return <Navigate to="/" replace />;
+  return children;
+}
+
 const AppRoutes = () => (
   <BrowserRouter>
     <Navbar />
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<About />} />
-      <Route path="/report" element={<ReportWaste />} />
-      <Route path="/wallet" element={<Wallet />} />
-      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/auth" element={<AuthPage />} />
-      <Route path="/donate" element={<DonateItems />} />
+
+      <Route
+        path="/report"
+        element={
+          <UserRoute>
+            <ReportWaste />
+          </UserRoute>
+        }
+      />
+      <Route
+        path="/wallet"
+        element={
+          <UserRoute>
+            <Wallet />
+          </UserRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <UserRoute>
+            <Dashboard />
+          </UserRoute>
+        }
+      />
+      <Route
+        path="/donate"
+        element={
+          <UserRoute>
+            <DonateItems />
+          </UserRoute>
+        }
+      />
 
       <Route
         path="/admin"

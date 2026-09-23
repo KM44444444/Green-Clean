@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUser } from "@/UserContext";
+import { useToast } from "@/hooks/use-toast";
 
 const states = [
   { name: "Uttar Pradesh", cities: ["Lucknow", "Kanpur", "Varanasi", "Agra", "Meerut"] },
@@ -18,12 +20,60 @@ export default function AuthPage() {
   const [selectedState, setSelectedState] = useState(states[0].name);
   const [selectedCity, setSelectedCity] = useState(states[0].cities[0]);
   const navigate = useNavigate();
+  const { login, signup } = useUser();
+  const { toast } = useToast();
 
   const cities = states.find((state) => state.name === selectedState)?.cities ?? [];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(isLogin ? "/dashboard" : "/");
+
+    if (isLogin) {
+      const result = await login(email, password);
+      if (!result.ok) {
+        toast({
+          title: "Login failed",
+          description: result.error,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (result.user.role === "admin") {
+        navigate("/admin");
+      } else if (result.user.role === "worker") {
+        navigate("/worker");
+      } else {
+        navigate("/dashboard");
+      }
+      return;
+    }
+
+    const result = await signup({
+      name,
+      email,
+      password,
+      role: "user",
+      state: selectedState,
+      city: selectedCity,
+    });
+
+    if (!result.ok) {
+      toast({
+        title: "Sign up failed",
+        description: result.error,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (result.user.role === "admin") {
+      navigate("/admin");
+    } else if (result.user.role === "worker") {
+      navigate("/worker");
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   return (

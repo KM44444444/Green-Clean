@@ -5,6 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const workers = [
+  { name: "Rohan Singh", city: "Lucknow" },
+  { name: "Priya Sharma", city: "Meerut" },
+  { name: "Arjun Patel", city: "Kanpur" },
+];
+
 const users = [
   { name: "Asha Verma", role: "Citizen", city: "Meerut" },
   { name: "Rohan Singh", role: "Worker", city: "Lucknow" },
@@ -14,6 +20,7 @@ const users = [
 const reports = [
   { id: "WR001", user: "Asha Verma", city: "Meerut", status: "Pending" },
   { id: "WR002", user: "Rohan Singh", city: "Lucknow", status: "In Progress" },
+  { id: "WR003", user: "Neha Patel", city: "Kanpur", status: "Pending" },
 ];
 
 const rewards = [
@@ -88,8 +95,16 @@ export default function AdminPanel() {
                       <p className="font-medium">#{report.id} — {report.user}</p>
                       <p className="text-xs text-muted-foreground">{report.city}</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <Badge className={report.status === "Pending" ? "bg-warning text-warning-foreground" : "bg-success text-success-foreground"}>{report.status}</Badge>
+                      {report.status === "Pending" && (
+                        <select className="border rounded px-2 py-1 text-sm">
+                          <option value="">Assign worker</option>
+                          {workers.map((worker) => (
+                            <option key={worker.name} value={worker.name}>{worker.name} ({worker.city})</option>
+                          ))}
+                        </select>
+                      )}
                     </div>
                   </div>
                 ))}

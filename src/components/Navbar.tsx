@@ -2,18 +2,26 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Leaf, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useUser } from "@/UserContext";
 
-const navigation = [
+const defaultNavigation = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
+];
+
+const citizenNavigation = [
   { name: "Report Waste", href: "/report" },
   { name: "Wallet", href: "/wallet" },
   { name: "Dashboard", href: "/dashboard" },
+  { name: "Donate Items", href: "/donate" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { currentUser } = useUser();
+
+  const navigation = [...defaultNavigation, ...(currentUser?.role === "user" ? citizenNavigation : [])];
 
   const isActive = (href: string) => location.pathname === href;
 
@@ -42,8 +50,10 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <Link to="/auth">
-              <Button variant="eco" size="sm">Get Started</Button>
+            <Link to={currentUser?.role === "admin" ? "/admin" : currentUser?.role === "worker" ? "/worker" : "/auth"}>
+              <Button variant="eco" size="sm">
+                {currentUser?.role === "admin" ? "Admin Panel" : currentUser?.role === "worker" ? "Worker Panel" : "Get Started"}
+              </Button>
             </Link>
           </div>
 
@@ -72,8 +82,10 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="px-3 py-2">
-                <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button variant="eco" size="sm" className="w-full">Get Started</Button>
+                <Link to={currentUser?.role === "admin" ? "/admin" : currentUser?.role === "worker" ? "/worker" : "/auth"} onClick={() => setIsOpen(false)}>
+                  <Button variant="eco" size="sm" className="w-full">
+                    {currentUser?.role === "admin" ? "Admin Panel" : currentUser?.role === "worker" ? "Worker Panel" : "Get Started"}
+                  </Button>
                 </Link>
               </div>
             </div>
