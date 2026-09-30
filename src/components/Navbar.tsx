@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, X } from "lucide-react";
+import { Leaf, Menu, X, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/UserContext";
 
@@ -19,7 +19,7 @@ const citizenNavigation = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { currentUser } = useUser();
+  const { currentUser, logout } = useUser();
 
   const navigation = [...defaultNavigation, ...(currentUser?.role === "user" ? citizenNavigation : [])];
 
@@ -50,11 +50,19 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <Link to={currentUser?.role === "admin" ? "/admin" : currentUser?.role === "worker" ? "/worker" : "/auth"}>
-              <Button variant="eco" size="sm">
-                {currentUser?.role === "admin" ? "Admin Panel" : currentUser?.role === "worker" ? "Worker Panel" : "Get Started"}
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link to={currentUser?.role === "admin" ? "/admin" : currentUser?.role === "worker" ? "/worker" : "/auth"}>
+                <Button variant="eco" size="sm">
+                  {currentUser?.role === "admin" ? "Admin Panel" : currentUser?.role === "worker" ? "Worker Panel" : "Get Started"}
+                </Button>
+              </Link>
+              {currentUser && (
+                <Button variant="outline" size="sm" onClick={logout} className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              )}
+            </div>
           </div>
 
           <div className="md:hidden flex items-center">
@@ -81,12 +89,18 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
-              <div className="px-3 py-2">
+              <div className="px-3 py-2 space-y-2">
                 <Link to={currentUser?.role === "admin" ? "/admin" : currentUser?.role === "worker" ? "/worker" : "/auth"} onClick={() => setIsOpen(false)}>
                   <Button variant="eco" size="sm" className="w-full">
                     {currentUser?.role === "admin" ? "Admin Panel" : currentUser?.role === "worker" ? "Worker Panel" : "Get Started"}
                   </Button>
                 </Link>
+                {currentUser && (
+                  <Button variant="outline" size="sm" className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20" onClick={() => { logout(); setIsOpen(false); }}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </Button>
+                )}
               </div>
             </div>
           </div>
