@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -5,30 +7,53 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const workers = [
+const initialWorkers = [
   { name: "Rohan Singh", city: "Lucknow" },
   { name: "Priya Sharma", city: "Meerut" },
   { name: "Arjun Patel", city: "Kanpur" },
 ];
 
-const users = [
+const initialUsers = [
   { name: "Asha Verma", role: "Citizen", city: "Meerut" },
   { name: "Rohan Singh", role: "Worker", city: "Lucknow" },
   { name: "Neha Patel", role: "Citizen", city: "Kanpur" },
 ];
 
-const reports = [
+const initialReports = [
   { id: "WR001", user: "Asha Verma", city: "Meerut", status: "Pending" },
   { id: "WR002", user: "Rohan Singh", city: "Lucknow", status: "In Progress" },
   { id: "WR003", user: "Neha Patel", city: "Kanpur", status: "Pending" },
 ];
 
-const rewards = [
+const initialRewards = [
   { title: "Plant a Tree", points: 100 },
   { title: "Eco Bag", points: 50 },
 ];
 
 export default function AdminPanel() {
+  const { toast } = useToast();
+  const [users, setUsers] = useState(initialUsers);
+  const [workers, setWorkers] = useState(initialWorkers);
+  const [reports, setReports] = useState(initialReports);
+  const [rewards, setRewards] = useState(initialRewards);
+
+  const handleApprove = (name: string) => {
+    setUsers(users.filter((u) => u.name !== name));
+    toast({
+      title: "Worker Approved",
+      description: `${name} has been approved successfully.`,
+    });
+  };
+
+  const handleReject = (name: string) => {
+    setUsers(users.filter((u) => u.name !== name));
+    toast({
+      title: "Worker Rejected",
+      description: `${name}'s application has been rejected.`,
+      variant: "destructive",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-muted/30">
       <div className="bg-gradient-hero text-white py-12 px-6">
@@ -81,8 +106,8 @@ export default function AdminPanel() {
                       </p>
                     </div>
                     <div className="flex gap-2 w-full sm:w-auto">
-                      <Button size="sm" variant="eco" className="flex-1 sm:flex-none">Approve</Button>
-                      <Button size="sm" variant="destructive" className="flex-1 sm:flex-none">Reject</Button>
+                      <Button size="sm" variant="eco" className="flex-1 sm:flex-none" onClick={() => handleApprove(user.name)}>Approve</Button>
+                      <Button size="sm" variant="destructive" className="flex-1 sm:flex-none" onClick={() => handleReject(user.name)}>Reject</Button>
                     </div>
                   </div>
                 ))}
@@ -106,7 +131,18 @@ export default function AdminPanel() {
                     </div>
                     <div className="flex items-center gap-2 w-full md:w-auto">
                       {report.status === "Pending" ? (
-                        <select className="border rounded-lg px-3 py-2 text-sm bg-background w-full md:w-64 focus:ring-2 focus:ring-primary outline-none transition-shadow">
+                        <select 
+                          className="border rounded-lg px-3 py-2 text-sm bg-background w-full md:w-64 focus:ring-2 focus:ring-primary outline-none transition-shadow"
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              setReports(reports.map(r => r.id === report.id ? { ...r, status: "In Progress" } : r));
+                              toast({
+                                title: "Worker Assigned",
+                                description: `Report #${report.id} assigned to ${e.target.value}.`,
+                              });
+                            }
+                          }}
+                        >
                           <option value="">Assign to worker...</option>
                           {workers.map((worker) => (
                             <option key={worker.name} value={worker.name}>{worker.name} ({worker.city})</option>
