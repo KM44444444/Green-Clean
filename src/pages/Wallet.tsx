@@ -1,31 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Coins, Gift, ShoppingBag, TreePine, Coffee, Bus, Ticket } from "lucide-react";
+import { Coins, Gift, ShoppingBag, TreePine, Coffee, Bus, Ticket, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import { useUser, API_BASE } from "@/UserContext";
 
-const rewards = [
-  { id: 1, title: "Plant a Tree", description: "Sponsor a tree plantation in your city", points: 100, icon: TreePine, category: "Environment", available: true },
-  { id: 2, title: "Eco-friendly Bag", description: "Reusable cotton shopping bag", points: 50, icon: ShoppingBag, category: "Products", available: true },
-  { id: 3, title: "Coffee Shop Voucher", description: "₹200 voucher for sustainable cafes", points: 150, icon: Coffee, category: "Food", available: true },
-  { id: 4, title: "Public Transport Pass", description: "1-day free metro/bus pass", points: 80, icon: Bus, category: "Transport", available: true },
-  { id: 5, title: "Shopping of Daily Needs", description: "Essential household and daily items", points: 100, icon: ShoppingBag, category: "Products", available: true },
-  { id: 6, title: "Order Food Discount", description: "Discount coupon for food delivery", points: 300, icon: Ticket, category: "Food", available: true },
-];
+const iconMap: Record<string, any> = {
+  "TreePine": TreePine,
+  "ShoppingBag": ShoppingBag,
+  "Coffee": Coffee,
+  "Bus": Bus,
+  "Ticket": Ticket,
+};
 
 const Wallet = () => {
-  const [userPoints, setUserPoints] = useState(247);
+  const [userPoints, setUserPoints] = useState(0);
+  const [rewards, setRewards] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { token } = useUser();
 
-  const handleRedeem = (reward: typeof rewards[number]) => {
-    if (userPoints >= reward.points) {
-      setUserPoints((prev) => prev - reward.points);
-      toast({ title: "Reward redeemed successfully!", description: `You've redeemed ${reward.title} for ${reward.points} points.` });
-    } else {
-      toast({ title: "Insufficient points", description: `You need ${reward.points - userPoints} more points to redeem this reward.`, variant: "destructive" });
+  const fetchData = async () => {
+    try {
+      if (!token) return;
+      const [walletRes, rewardsRes] = await Promise.all([
+        fetch(`${API_BASE}/api/wallet`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE}/api/wallet/rewards`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      const walletData = await walletRes.json();
+      const rewardsData = await rewardsRes.json();
+      
+      setUserPoints(walletData.balance || 0);
+      setTransactions(walletData.transactions || []);
+      setRewards(rewardsData.rewards || []);
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to load wallet data", variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [token]);
+
+  const handleRedeem = async (reward: any) => {
+    if (userPoints < reward.cost_points) {
+      toast({ title: "Insufficient points", description: `You need ${reward.cost_points - userPoints} more points.`, variant: "destructive" });
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/wallet/redeem`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ rewardId: reward.id })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        toast({ title: "Error", description: data.error || "Failed to redeem", variant: "destructive" });
+        return;
+      }
+      
+      toast({ title: "Reward redeemed!", description: `You've redeemed ${data.redeemed}.` });
+      fetchData(); // Refresh wallet data
+    } catch (err) {
+      toast({ title: "Error", description: "Network error", variant: "destructive" });
+    }
+  };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-green-600" /></div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,20 +100,20 @@ const Wallet = () => {
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center"><Gift className="h-6 w-6 mr-2 text-accent" />Available Rewards</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {rewards.map((reward) => {
-                  const Icon = reward.icon;
+                  const Icon = iconMap[reward.icon_name] || Gift;
                   return (
                     <Card key={reward.id} className="bg-gradient-card shadow-card">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <Icon className="h-5 w-5 text-accent" />
-                            <h3 className="font-semibold">{reward.title}</h3>
+                            <h3 className="font-semibold">{reward.name}</h3>
                           </div>
-                          <span className="text-sm font-medium text-accent">{reward.points} pts</span>
+                          <span className="text-sm font-medium text-accent">{reward.cost_points} pts</span>
                         </div>
                         <p className="text-sm text-muted-foreground mb-4">{reward.description}</p>
-                        <Button variant="eco" className="w-full" onClick={() => handleRedeem(reward)} disabled={userPoints < reward.points}>
-                          {userPoints >= reward.points ? "Redeem" : "Need more points"}
+                        <Button variant="eco" className="w-full" onClick={() => handleRedeem(reward)} disabled={userPoints < reward.cost_points}>
+                          {userPoints >= reward.cost_points ? "Redeem" : "Need more points"}
                         </Button>
                       </CardContent>
                     </Card>
@@ -75,14 +125,17 @@ const Wallet = () => {
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-6">Recent Activity</h2>
               <div className="space-y-3">
-                {[{ date: "2025-01-15", description: "Waste Report #WR001", points: "+5", type: "earned" }, { date: "2025-01-14", description: "Waste Report #WR002", points: "+5", type: "earned" }, { date: "2025-01-13", description: "Redeemed: Eco Bag", points: "-50", type: "redeemed" }].map((entry, index) => (
-                  <Card key={index} className="bg-card">
+                {transactions.length === 0 ? <p className="text-muted-foreground">No recent activity.</p> : null}
+                {transactions.map((entry) => (
+                  <Card key={entry.id} className="bg-card">
                     <CardContent className="p-4 flex items-center justify-between">
                       <div>
                         <p className="font-medium">{entry.description}</p>
-                        <p className="text-xs text-muted-foreground">{entry.date}</p>
+                        <p className="text-xs text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</p>
                       </div>
-                      <span className={entry.type === "earned" ? "text-success font-bold" : "text-destructive font-bold"}>{entry.points}</span>
+                      <span className={entry.points > 0 ? "text-success font-bold" : "text-destructive font-bold"}>
+                        {entry.points > 0 ? `+${entry.points}` : entry.points}
+                      </span>
                     </CardContent>
                   </Card>
                 ))}

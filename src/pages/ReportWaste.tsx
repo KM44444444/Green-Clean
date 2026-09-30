@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import { Camera, MapPin, Upload, CheckCircle, Loader2 } from "lucide-react";
+import { useUser } from "@/UserContext";
 
 const oldItemPoints: Record<string, number> = {
   newspaperBundle: 30,
@@ -31,6 +32,7 @@ const ReportWaste = () => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const { toast } = useToast();
+  const { token } = useUser();
 
   useEffect(() => () => {
     if (stream) stream.getTracks().forEach((track) => track.stop());
@@ -118,13 +120,36 @@ const ReportWaste = () => {
 
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const formData = new FormData();
+      formData.append("photo", photo);
+      formData.append("category", wasteCategory);
+      if (oldItemType) formData.append("itemType", oldItemType);
+      if (oldItemWeight) formData.append("weight", oldItemWeight.toString());
+      if (description) formData.append("description", description);
+      formData.append("lat", location.lat.toString());
+      formData.append("lng", location.lng.toString());
+
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || "https://green-clean.onrender.com"}/api/reports`, {
+        method: "POST",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
       setLoading(false);
+
+      if (!res.ok) {
+        toast({ title: "Error", description: data.error || "Could not submit report.", variant: "destructive" });
+        return;
+      }
+
       setSubmitted(true);
-      toast({ title: "Report submitted", description: `You earned ${wasteCategory === "oldHousehold" ? calculatedPoints : 5} points.` });
-    } catch {
+      toast({ title: "Report submitted", description: `You earned ${data.pointsAwarded || 0} points.` });
+    } catch (err) {
       setLoading(false);
-      toast({ title: "Error", description: "Could not submit report.", variant: "destructive" });
+      toast({ title: "Error", description: "Could not submit report. Check your connection.", variant: "destructive" });
     }
   };
 
