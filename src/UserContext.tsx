@@ -9,7 +9,7 @@ import {
   signup as storeSignup,
 } from "@/lib/store";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5001";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://green-clean.onrender.com";
 
 export { API_BASE };
 
