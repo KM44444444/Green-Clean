@@ -4,7 +4,6 @@ const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/wallet - balance + transaction history for the logged-in user.
 router.get('/', requireAuth, (req, res) => {
   const user = db.prepare('SELECT points FROM users WHERE id = ?').get(req.user.id);
   const transactions = db
@@ -13,13 +12,11 @@ router.get('/', requireAuth, (req, res) => {
   res.json({ balance: user ? user.points : 0, transactions });
 });
 
-// GET /api/wallet/rewards - active reward catalog.
 router.get('/rewards', requireAuth, (req, res) => {
   const rewards = db.prepare('SELECT * FROM rewards WHERE active = 1 ORDER BY cost_points ASC').all();
   res.json({ rewards });
 });
 
-// POST /api/wallet/redeem - spend points on a reward.
 router.post('/redeem', requireAuth, (req, res) => {
   const { rewardId } = req.body;
   if (!rewardId) return res.status(400).json({ error: 'rewardId is required' });

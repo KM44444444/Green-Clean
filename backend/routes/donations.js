@@ -11,7 +11,6 @@ const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 const upload = multer({ dest: uploadDir, limits: { fileSize: 8 * 1024 * 1024 } });
 
-// POST /api/donations - submit an item for reuse/recycling.
 router.post('/', requireAuth, upload.single('photo'), (req, res) => {
   const { itemType, quantity, condition, description } = req.body;
   if (!itemType) return res.status(400).json({ error: 'itemType is required' });
@@ -34,7 +33,6 @@ router.post('/', requireAuth, upload.single('photo'), (req, res) => {
   res.status(201).json({ donation });
 });
 
-// GET /api/donations/mine
 router.get('/mine', requireAuth, (req, res) => {
   const donations = db
     .prepare('SELECT * FROM donations WHERE user_id = ? ORDER BY created_at DESC')

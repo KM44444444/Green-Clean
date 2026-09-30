@@ -1,5 +1,3 @@
-// SQLite database setup + schema + seed data for Green & Clean.
-// Uses better-sqlite3 (synchronous, zero external services required).
 require('dotenv').config();
 const Database = require('better-sqlite3');
 const path = require('path');
@@ -80,7 +78,6 @@ CREATE TABLE IF NOT EXISTS rewards (
 );
 `);
 
-// Seed a default reward catalog once.
 const rewardCount = db.prepare('SELECT COUNT(*) AS c FROM rewards').get().c;
 if (rewardCount === 0) {
   const insert = db.prepare(

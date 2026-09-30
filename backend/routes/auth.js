@@ -19,7 +19,6 @@ function publicUser(user) {
   return rest;
 }
 
-// POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password, role = 'user', state, city } = req.body;
@@ -27,14 +26,12 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ error: 'name, email and password are required' });
     }
     if (!['user', 'worker'].includes(role)) {
-      // Admin accounts are never created through public signup.
       return res.status(400).json({ error: 'Invalid role for signup' });
     }
     const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
     if (existing) return res.status(409).json({ error: 'Email already registered' });
 
     const password_hash = await bcrypt.hash(password, 10);
-    // Workers must be verified by an admin before they can access worker tools.
     const verified = role === 'worker' ? 0 : 1;
 
     const info = db
@@ -53,7 +50,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -73,7 +69,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /api/auth/me - resolve the current token to fresh user data.
 router.get('/me', requireAuth, (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
   if (!user) return res.status(404).json({ error: 'User not found' });

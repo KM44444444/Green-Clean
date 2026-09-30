@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
 
-// Verifies the Bearer token and attaches { id, role } to req.user.
 function requireAuth(req, res, next) {
   const header = req.headers['authorization'] || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -16,7 +15,6 @@ function requireAuth(req, res, next) {
   }
 }
 
-// Restricts a route to one or more roles. Use after requireAuth.
 function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {

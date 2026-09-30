@@ -11,7 +11,6 @@ const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 const upload = multer({ dest: uploadDir, limits: { fileSize: 8 * 1024 * 1024 } });
 
-// Fixed point values, mirrors the old frontend-only table but now authoritative server-side.
 const OLD_ITEM_POINTS = {
   newspaperBundle: 30,
   oilCans: 20,
@@ -51,7 +50,6 @@ function getDateString(date) {
   return date.toISOString().slice(0, 10);
 }
 
-// POST /api/reports - create a waste report (citizens only), with photo + points + daily limit.
 router.post('/', requireAuth, requireRole('user'), upload.single('photo'), async (req, res) => {
   try {
     const { category, itemType, weight, description, lat, lng, city } = req.body;
@@ -101,7 +99,6 @@ router.post('/', requireAuth, requireRole('user'), upload.single('photo'), async
       ).run(req.user.id, points, `Report #${info.lastInsertRowid} submitted`);
     }
 
-    // Notify workers in the same city.
     if (city || req.user.city) {
       db.prepare(`INSERT INTO notifications (city, message) VALUES (?, ?)`).run(
         city || req.user.city,
@@ -117,7 +114,6 @@ router.post('/', requireAuth, requireRole('user'), upload.single('photo'), async
   }
 });
 
-// GET /api/reports/mine - citizen's own reports.
 router.get('/mine', requireAuth, (req, res) => {
   const reports = db
     .prepare('SELECT * FROM reports WHERE user_id = ? ORDER BY created_at DESC')
@@ -125,7 +121,6 @@ router.get('/mine', requireAuth, (req, res) => {
   res.json({ reports });
 });
 
-// GET /api/reports - admin/worker scoped list (worker sees own city only).
 router.get('/', requireAuth, requireRole('worker', 'admin'), (req, res) => {
   let reports;
   if (req.user.role === 'worker') {
