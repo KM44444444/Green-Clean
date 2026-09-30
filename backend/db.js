@@ -94,19 +94,16 @@ if (rewardCount === 0) {
 }
 
 const bcrypt = require('bcryptjs');
-const userCount = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
-if (userCount === 0) {
-  const insertUser = db.prepare(
-    'INSERT INTO users (name, email, password_hash, role, city, verified, points) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  );
-  const hash = (pw) => bcrypt.hashSync(pw, 10);
-  const seedUsers = [
-    ['Admin User', 'admin@greenclean.in', hash('admin123'), 'admin', 'Delhi', 1, 0],
-    ['Worker John', 'worker@greenclean.in', hash('worker123'), 'worker', 'Delhi', 1, 0],
-    ['Demo Citizen', 'demo@greenclean.in', hash('demo123'), 'user', 'Delhi', 1, 100],
-  ];
-  const txUser = db.transaction((rows) => rows.forEach((r) => insertUser.run(...r)));
-  txUser(seedUsers);
-}
+const insertUser = db.prepare(
+  'INSERT OR IGNORE INTO users (name, email, password_hash, role, city, verified, points) VALUES (?, ?, ?, ?, ?, ?, ?)'
+);
+const hash = (pw) => bcrypt.hashSync(pw, 10);
+const seedUsers = [
+  ['Admin User', 'admin@greenclean.in', hash('admin123'), 'admin', 'Delhi', 1, 0],
+  ['Worker John', 'worker@greenclean.in', hash('worker123'), 'worker', 'Delhi', 1, 0],
+  ['Demo Citizen', 'demo@greenclean.in', hash('demo123'), 'user', 'Delhi', 1, 100],
+];
+const txUser = db.transaction((rows) => rows.forEach((r) => insertUser.run(...r)));
+txUser(seedUsers);
 
 module.exports = db;
