@@ -80,15 +80,39 @@ export default function AuthPage() {
     }
   };
 
+  const handleDemoLogin = async (demoEmail: string, demoPassword: string) => {
+    setIsLogin(true);
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    
+    const result = await login(demoEmail, demoPassword);
+    if (!result.ok) {
+      toast({
+        title: "Login failed",
+        description: result.error,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (result.user.role === "admin") {
+      navigate("/admin");
+    } else if (result.user.role === "worker") {
+      navigate("/worker");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-green-50 flex flex-col items-center justify-center font-sans p-8">
       <h1 className="text-3xl font-bold text-green-900 mb-2">Green & Clean</h1>
       <div className="mb-8 flex flex-col items-center space-y-2 w-full max-w-md">
         <p className="text-sm text-muted-foreground font-semibold">Demo Accounts</p>
         <div className="flex flex-wrap gap-2 justify-center">
-          <Button variant="outline" size="sm" type="button" onClick={() => { setIsLogin(true); setEmail('admin@greenclean.in'); setPassword('admin123'); }}>Admin</Button>
-          <Button variant="outline" size="sm" type="button" onClick={() => { setIsLogin(true); setEmail('worker@greenclean.in'); setPassword('worker123'); }}>Worker</Button>
-          <Button variant="outline" size="sm" type="button" onClick={() => { setIsLogin(true); setEmail('demo@greenclean.in'); setPassword('demo123'); }}>Citizen</Button>
+          <Button variant="outline" size="sm" type="button" onClick={() => handleDemoLogin('admin@greenclean.in', 'admin123')}>Admin</Button>
+          <Button variant="outline" size="sm" type="button" onClick={() => handleDemoLogin('worker@greenclean.in', 'worker123')}>Worker</Button>
+          <Button variant="outline" size="sm" type="button" onClick={() => handleDemoLogin('demo@greenclean.in', 'demo123')}>Citizen</Button>
         </div>
       </div>
 
