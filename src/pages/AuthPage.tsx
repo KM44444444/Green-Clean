@@ -83,7 +83,14 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-green-50 flex flex-col items-center justify-center font-sans p-8">
       <h1 className="text-3xl font-bold text-green-900 mb-2">Green & Clean</h1>
-      <p className="text-sm text-muted-foreground mb-8">Demo admin login: admin@greenclean.in / admin123</p>
+      <div className="mb-8 flex flex-col items-center space-y-2 w-full max-w-md">
+        <p className="text-sm text-muted-foreground font-semibold">Demo Accounts</p>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <Button variant="outline" size="sm" type="button" onClick={() => { setIsLogin(true); setEmail('admin@greenclean.in'); setPassword('admin123'); }}>Admin</Button>
+          <Button variant="outline" size="sm" type="button" onClick={() => { setIsLogin(true); setEmail('worker@greenclean.in'); setPassword('worker123'); }}>Worker</Button>
+          <Button variant="outline" size="sm" type="button" onClick={() => { setIsLogin(true); setEmail('demo@greenclean.in'); setPassword('demo123'); }}>Citizen</Button>
+        </div>
+      </div>
 
       <div className="flex space-x-4 mb-6">
         <button type="button" onClick={() => setIsLogin(true)} className={`px-6 py-2 rounded-full font-semibold ${isLogin ? "bg-green-700 text-white shadow-lg" : "bg-white text-green-700 border border-green-700"}`}>
