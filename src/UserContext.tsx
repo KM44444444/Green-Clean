@@ -57,7 +57,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...options,
       headers: { ...headers, ...options.headers },
     });
-    return await res.json();
+    const data = await res.json();
+    return { ok: res.ok, ...data };
   };
 
   const login: UserContextType["login"] = async (email, password) => {
