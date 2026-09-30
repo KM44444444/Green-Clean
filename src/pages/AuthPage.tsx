@@ -7,8 +7,6 @@ import { Label } from "@/components/ui/label";
 import { useUser } from "@/UserContext";
 import { useToast } from "@/hooks/use-toast";
 
-// India has 28 states and 8 union territories. City names are entered as
-// text because there are thousands of towns and cities, and the list changes.
 const states = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
   "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",

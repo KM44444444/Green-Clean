@@ -1,11 +1,3 @@
-// ---------------------------------------------------------------------------
-// Green & Clean — client-side data layer.
-// No backend database and no external APIs are used: everything is persisted
-// in the browser via localStorage. This keeps the app fully functional and
-// demo-able without any server-side storage, per project constraints.
-// Note: password "hashing" below is a trivial demo-only obfuscation, not
-// real cryptography — there is no backend to do this properly.
-// ---------------------------------------------------------------------------
 
 export type Role = "user" | "worker" | "admin";
 export type ReportStatus = "reported" | "assigned" | "cleaned" | "rejected";
@@ -92,10 +84,6 @@ const KEYS = {
   seeded: "gc_seeded_v1",
 };
 
-// ---------------------------------------------------------------------------
-// generic helpers
-// ---------------------------------------------------------------------------
-
 function read<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(key);
@@ -109,8 +97,7 @@ function write<T>(key: string, value: T) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // localStorage unavailable (e.g. private mode) — fail silently, app still
-    // works in-memory for the current session via React state.
+
   }
 }
 
@@ -119,7 +106,7 @@ export function uid(prefix = ""): string {
 }
 
 export function hashPassword(pw: string): string {
-  // NOT secure — demo-only obfuscation since there is no backend to hash on.
+
   let h = 0;
   for (let i = 0; i < pw.length; i++) {
     h = (h * 31 + pw.charCodeAt(i)) | 0;
@@ -152,11 +139,6 @@ export function timeAgo(iso: string): string {
   const days = Math.floor(hrs / 24);
   return `${days} day${days > 1 ? "s" : ""} ago`;
 }
-
-// ---------------------------------------------------------------------------
-// seed data — only runs once so the dashboard/admin views aren't empty, and
-// so there's a ready-made demo admin account to log in with.
-// ---------------------------------------------------------------------------
 
 export function seedIfNeeded() {
   if (read(KEYS.seeded, false)) return;
@@ -218,10 +200,6 @@ export function seedIfNeeded() {
   write(KEYS.notifications, []);
   write(KEYS.seeded, true);
 }
-
-// ---------------------------------------------------------------------------
-// users / auth
-// ---------------------------------------------------------------------------
 
 export function getUsers(): StoredUser[] {
   return read<StoredUser[]>(KEYS.users, []);
@@ -297,10 +275,6 @@ export function deleteUser(userId: string) {
   saveUsers(getUsers().filter((u) => u.id !== userId));
 }
 
-// ---------------------------------------------------------------------------
-// reports
-// ---------------------------------------------------------------------------
-
 export function getReports(): WasteReport[] {
   return read<WasteReport[]>(KEYS.reports, []);
 }
@@ -361,10 +335,6 @@ export function deleteReport(reportId: string) {
   saveReports(getReports().filter((r) => r.id !== reportId));
 }
 
-// ---------------------------------------------------------------------------
-// wallet / transactions
-// ---------------------------------------------------------------------------
-
 export function getTransactions(userId?: string): Transaction[] {
   const all = read<Transaction[]>(KEYS.transactions, []);
   return userId ? all.filter((t) => t.userId === userId) : all;
@@ -393,10 +363,6 @@ export function redeemReward(userId: string, reward: Reward): { ok: boolean; err
   return { ok: true };
 }
 
-// ---------------------------------------------------------------------------
-// rewards catalog (admin-editable)
-// ---------------------------------------------------------------------------
-
 export function getRewards(): Reward[] {
   return read<Reward[]>(KEYS.rewards, []);
 }
@@ -409,10 +375,6 @@ export function addReward(reward: Omit<Reward, "id">) {
 export function deleteReward(id: string) {
   saveRewards(getRewards().filter((r) => r.id !== id));
 }
-
-// ---------------------------------------------------------------------------
-// donations
-// ---------------------------------------------------------------------------
 
 export function getDonations(userId?: string): Donation[] {
   const all = read<Donation[]>(KEYS.donations, []);
@@ -434,10 +396,6 @@ export function markDonationCollected(id: string) {
     getDonations().map((d) => (d.id === id ? { ...d, status: "collected" as const } : d))
   );
 }
-
-// ---------------------------------------------------------------------------
-// notifications
-// ---------------------------------------------------------------------------
 
 export function getNotifications(userId: string): AppNotification[] {
   return read<AppNotification[]>(KEYS.notifications, []).filter((n) => n.userId === userId);
