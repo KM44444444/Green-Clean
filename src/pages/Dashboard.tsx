@@ -44,12 +44,25 @@ const getStatusIcon = (status: string) => {
 const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-4">Dashboard</h1>
-            <p className="text-xl text-muted-foreground">Real-time waste management insights and analytics</p>
+      {/* Hero Section */}
+      <section className="bg-gradient-hero text-white py-12 px-6 mb-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Platform Analytics</h1>
+            <p className="text-white/80 text-lg">Real-time waste management insights and operations overview.</p>
           </div>
+          <div className="hidden md:block">
+            <Badge className="bg-white/20 hover:bg-white/30 text-white border-none py-1.5 px-4 rounded-xl text-sm">
+              <span className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /> Live Systems
+              </span>
+            </Badge>
+          </div>
+        </div>
+      </section>
+
+      <div className="px-4 pb-16">
+        <div className="max-w-7xl mx-auto -mt-16">
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="bg-gradient-card shadow-card">

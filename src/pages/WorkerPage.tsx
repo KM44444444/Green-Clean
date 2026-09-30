@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import { useUser, API_BASE } from "@/UserContext";
-import { Loader2 } from "lucide-react";
+import { Loader2, MapPin, AlertCircle, CheckCircle, Activity, ClipboardList, Bell, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const workerGuidelines = [
@@ -80,67 +81,156 @@ export default function WorkerPage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-green-600" /></div>;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-12 min-h-screen">
-      <section className="bg-white p-6 rounded-lg shadow">
-        <h1 className="text-3xl font-bold mb-2">Welcome, {currentUser.name}</h1>
-        <p className="text-gray-700 mb-1">Worker Area: <span className="font-medium">{currentUser.city}</span></p>
-        {currentUser.verified ? (
-          <p className="text-green-600 font-semibold">Verified Worker</p>
-        ) : (
-          <p className="text-red-500 font-semibold">Account Pending Verification</p>
-        )}
+    <div className="min-h-screen bg-muted/30">
+      {/* Hero Section */}
+      <section className="bg-gradient-hero text-white py-12 px-6">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
+              Worker Dashboard
+            </h1>
+            <p className="text-white/80 text-lg flex items-center gap-2">
+              <MapPin className="w-5 h-5" /> {currentUser.city} Area
+            </p>
+          </div>
+          <div className="hidden md:flex flex-col items-end">
+            <span className="text-lg font-medium">Welcome, {currentUser.name}</span>
+            {currentUser.verified ? (
+              <Badge className="bg-white/20 text-white hover:bg-white/30 border-none mt-2">
+                <CheckCircle className="w-3 h-3 mr-1" /> Verified Partner
+              </Badge>
+            ) : (
+              <Badge className="bg-red-500/80 text-white hover:bg-red-500/90 border-none mt-2">
+                <AlertCircle className="w-3 h-3 mr-1" /> Pending Verification
+              </Badge>
+            )}
+          </div>
+        </div>
       </section>
 
-      <section className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-semibold mb-4">Available & Assigned Tasks</h2>
-        {tasks.length === 0 ? <p className="text-gray-500">No tasks currently.</p> : (
-          <ul className="space-y-4">
-            {tasks.map((task) => (
-              <li key={task.id} className="p-4 border rounded flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-lg">Report #{task.id} - {task.category}</p>
-                  <p className="text-gray-600 text-sm">Location: {task.lat}, {task.lng}</p>
-                  <p className="text-sm">Status: <span className="font-semibold capitalize text-green-700">{task.status}</span></p>
-                </div>
-                {task.status === "pending" && (
-                  <Button onClick={() => handleClaim(task.id)}>Claim Task</Button>
+      <div className="max-w-6xl mx-auto px-6 -mt-8 space-y-8 pb-12">
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="shadow-card border-none bg-white">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="p-4 bg-success/10 rounded-xl text-success">
+                <CheckCircle className="w-8 h-8" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Completed Tasks</p>
+                <h3 className="text-3xl font-bold">{stats.completed}</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="shadow-card border-none bg-white">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="p-4 bg-warning/10 rounded-xl text-warning">
+                <Activity className="w-8 h-8" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Pending Tasks</p>
+                <h3 className="text-3xl font-bold">{stats.pending}</h3>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Tasks Area */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="shadow-card border-none">
+              <CardHeader className="border-b bg-muted/10">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5 text-primary" /> Tasks & Assignments
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {tasks.length === 0 ? (
+                  <div className="p-12 text-center text-muted-foreground">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                    <p>No tasks currently available.</p>
+                  </div>
+                ) : (
+                  <ul className="divide-y">
+                    {tasks.map((task) => (
+                      <li key={task.id} className="p-6 hover:bg-muted/30 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-lg text-foreground">Report #{task.id}</span>
+                            <Badge variant={task.status === "completed" ? "default" : "secondary"} className="capitalize">
+                              {task.status}
+                            </Badge>
+                          </div>
+                          <p className="text-muted-foreground text-sm flex items-center gap-1">
+                            <MapPin className="w-3 h-3" /> Location: {task.lat}, {task.lng}
+                          </p>
+                          <p className="text-sm font-medium text-primary bg-primary/5 px-2 py-1 rounded-md inline-block">
+                            Category: {task.category}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          {task.status === "pending" && (
+                            <Button className="w-full sm:w-auto shadow-button" onClick={() => handleClaim(task.id)}>
+                              Claim Task
+                            </Button>
+                          )}
+                          {task.status === "assigned" && task.assigned_worker_id === currentUser.id && (
+                            <Button variant="eco" className="w-full sm:w-auto shadow-button" onClick={() => handleComplete(task.id)}>
+                              <CheckCircle className="w-4 h-4 mr-2" /> Mark Complete
+                            </Button>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 )}
-                {task.status === "assigned" && task.assigned_worker_id === currentUser.id && (
-                  <Button variant="eco" onClick={() => handleComplete(task.id)}>Mark Completed</Button>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+              </CardContent>
+            </Card>
+          </div>
 
-      <section className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-semibold mb-4">Your Notifications</h2>
-        <ul className="space-y-3">
-          {notifications.length === 0 ? <p className="text-gray-500">No new notifications.</p> : null}
-          {notifications.map((notification) => (
-            <li key={notification.id} className="p-4 border border-gray-300 rounded shadow-sm bg-green-50">
-              {notification.message}
-            </li>
-          ))}
-        </ul>
-      </section>
+          {/* Sidebar Area */}
+          <div className="space-y-6">
+            <Card className="shadow-card border-none bg-gradient-card">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-accent" /> Notifications
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {notifications.length === 0 ? (
+                    <p className="text-sm text-muted-foreground italic">No new notifications.</p>
+                  ) : (
+                    notifications.map((notif) => (
+                      <li key={notif.id} className="p-3 bg-white border rounded-lg text-sm shadow-sm flex gap-3 items-start">
+                        <div className="w-2 h-2 rounded-full bg-accent mt-1.5 flex-shrink-0" />
+                        <span className="text-foreground">{notif.message}</span>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </CardContent>
+            </Card>
 
-      <section className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-semibold mb-4">Guidelines for Workers</h2>
-        <ul className="list-disc list-inside space-y-2 text-gray-700">
-          {workerGuidelines.map((guideline, idx) => (
-            <li key={idx}>{guideline}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-semibold mb-4">Dashboard Overview</h2>
-        <p className="text-gray-700 mb-2">Total tasks completed: {stats.completed}</p>
-        <p className="text-gray-700 mb-2">Pending tasks: {stats.pending}</p>
-      </section>
-
+            <Card className="shadow-card border-none">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-primary" /> Guidelines
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {workerGuidelines.map((guideline, idx) => (
+                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="font-bold text-accent">•</span> {guideline}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
       <Footer />
     </div>
   );
