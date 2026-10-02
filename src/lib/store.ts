@@ -11,7 +11,7 @@ export interface StoredUser {
   state: string;
   city: string;
   points: number;
-  verified: boolean; // workers require admin approval; users/admin auto-verified
+  verified: boolean;
   createdAt: string;
 }
 
@@ -39,7 +39,7 @@ export interface Transaction {
   id: string;
   userId: string;
   description: string;
-  points: number; // positive = earned, negative = redeemed
+  points: number;
   type: "earned" | "redeemed" | "bonus";
   createdAt: string;
 }
@@ -241,11 +241,11 @@ export function signup(input: {
     name: input.name.trim(),
     email,
     passwordHash: hashPassword(input.password),
-    role: input.role === "admin" ? "user" : input.role, // admin accounts are seeded only
+    role: input.role === "admin" ? "user" : input.role,
     state: input.state,
     city: input.city,
     points: 0,
-    verified: input.role !== "worker", // workers need admin approval
+    verified: input.role !== "worker",
     createdAt: new Date().toISOString(),
   };
   saveUsers([...users, user]);

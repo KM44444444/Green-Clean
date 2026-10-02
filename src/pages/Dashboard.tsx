@@ -44,7 +44,7 @@ const getStatusIcon = (status: string) => {
 const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
+
       <section className="bg-gradient-hero text-white py-12 px-6 mb-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>

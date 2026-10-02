@@ -39,7 +39,7 @@ try {
 }
 
 async function checkImageForGarbage(filePath) {
-  if (!visionClient) return true; // validation disabled locally
+  if (!visionClient) return true;
   const [result] = await visionClient.labelDetection(filePath);
   const labels = result.labelAnnotations || [];
   const garbageKeywords = ['garbage', 'trash', 'waste', 'dump', 'refuse'];

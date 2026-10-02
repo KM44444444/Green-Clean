@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bg-primary text-primary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Leaf className="h-8 w-8 text-accent" />
@@ -19,7 +19,7 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Quick Links */}
+
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
@@ -30,7 +30,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
+
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <div className="flex items-center space-x-2">
@@ -43,7 +43,7 @@ const Footer = () => {
               </a>
             </div>
 
-            {/* Donate Items Button added just below Contact */}
+
             <div className="mt-6">
               <Link to="/donate">
                 <Button variant="eco" size="sm" className="w-full">

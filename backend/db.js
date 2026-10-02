@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
   role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('user','worker','admin')),
   state TEXT,
   city TEXT,
-  verified INTEGER NOT NULL DEFAULT 1, -- workers default 0 (set at signup), users/admins default 1
+  verified INTEGER NOT NULL DEFAULT 1,
   points INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS reports (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL REFERENCES users(id),
-  category TEXT NOT NULL, -- streetWaste | oldHousehold
+  category TEXT NOT NULL,
   item_type TEXT,
   weight REAL,
   description TEXT,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS wallet_transactions (
 
 CREATE TABLE IF NOT EXISTS notifications (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER REFERENCES users(id), -- null = broadcast to a city's workers
+  user_id INTEGER REFERENCES users(id),
   city TEXT,
   message TEXT NOT NULL,
   read INTEGER NOT NULL DEFAULT 0,

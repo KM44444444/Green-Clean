@@ -67,7 +67,7 @@ const Wallet = () => {
       }
       
       toast({ title: "Reward redeemed!", description: `You've redeemed ${data.redeemed}.` });
-      fetchData(); // Refresh wallet data
+      fetchData();
     } catch (err) {
       toast({ title: "Error", description: "Network error", variant: "destructive" });
     }

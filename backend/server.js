@@ -13,14 +13,12 @@ app.get("/", (req, res) => {
   res.send("Hello from backend!");
 });
 
-// Import routes
 const authRoutes = require("./routes/auth");
 const reportsRoutes = require("./routes/reports");
 const workerRoutes = require("./routes/worker");
 const donationsRoutes = require("./routes/donations");
 const walletRoutes = require("./routes/wallet");
 
-// Mount routes
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/worker", workerRoutes);

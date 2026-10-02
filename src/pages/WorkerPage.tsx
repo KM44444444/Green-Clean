@@ -82,7 +82,7 @@ export default function WorkerPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      {/* Hero Section */}
+
       <section className="bg-gradient-hero text-white py-12 px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div>
@@ -109,7 +109,7 @@ export default function WorkerPage() {
       </section>
 
       <div className="max-w-6xl mx-auto px-6 -mt-8 space-y-8 pb-12">
-        {/* Stats Row */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="shadow-card border-none bg-white">
             <CardContent className="p-6 flex items-center gap-4">
@@ -136,7 +136,7 @@ export default function WorkerPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Tasks Area */}
+
           <div className="lg:col-span-2 space-y-6">
             <Card className="shadow-card border-none">
               <CardHeader className="border-b bg-muted/10">
@@ -188,7 +188,7 @@ export default function WorkerPage() {
             </Card>
           </div>
 
-          {/* Sidebar Area */}
+
           <div className="space-y-6">
             <Card className="shadow-card border-none bg-gradient-card">
               <CardHeader>
